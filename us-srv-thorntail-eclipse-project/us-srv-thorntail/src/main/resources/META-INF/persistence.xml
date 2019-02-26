@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="urlRepos"
+		transaction-type="JTA">
+		<description>Persistence Unit for url repository</description>
+		<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+		<class>com.challenge.urlshortener.domain.UrlRepo</class>
+		<class>com.challenge.urlshortener.domain.Sequence</class>
+
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.transaction.jta.platform"
+				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+			<property name="hibernate.ogm.datastore.database"
+				value="url_repo_db" />
+
+			<property name="hibernate.ogm.datastore.host"
+				value="localhost" />
+
+			<!-- <property name="hibernate.ogm.datastore.host" value="us-srv-mongodb" 
+				/> -->
+			<property name="hibernate.ogm.datastore.provider"
+				value="MONGODB" />
+		</properties>
+	</persistence-unit>
+
+</persistence>
