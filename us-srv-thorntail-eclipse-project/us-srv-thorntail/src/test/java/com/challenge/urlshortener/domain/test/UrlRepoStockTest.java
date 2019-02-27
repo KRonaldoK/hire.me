@@ -61,6 +61,18 @@ public class UrlRepoStockTest {
 
 		UrlRepo created = urlRepoStock.findByAlias(urlRepo.getAlias());
 		assertThat(urlRepo, equalTo(created));
+		
+		// Avoid duplicates when the jUnit test run several times
+		Collection<UrlRepo> urlRepos = urlRepoStock.findAll();
+		urlRepos.forEach(item -> {
+			UrlRepo urlRepoFromCollection = (UrlRepo) item;
+			String id = urlRepoFromCollection.getId();
+			if ("http://www.raialeve.com.br".equals(urlRepoFromCollection.getLongUrl())) {
+				urlRepoStock.delete(id);
+			}
+			
+		});
+		
 	}
 
 	@Test
@@ -68,17 +80,6 @@ public class UrlRepoStockTest {
 		Collection<UrlRepo> urlRepos = urlRepoStock.findAll();
 		urlRepos.forEach(item -> {
 			assertThat(urlRepoStock.findByAlias(((UrlRepo) item).getAlias()), is(notNullValue()));
-		});
-
-	}
-	
-	@Test
-	public void deleteAll() {
-		Collection<UrlRepo> urlRepos = urlRepoStock.findAll();
-		urlRepos.forEach(item -> {
-			UrlRepo urlRepo = (UrlRepo) item;
-			String id = urlRepo.getId();
-			urlRepoStock.delete(id);
 		});
 
 	}
