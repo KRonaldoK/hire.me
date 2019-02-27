@@ -68,7 +68,9 @@ public class UrlRepoStockTest {
 			UrlRepo urlRepoFromCollection = (UrlRepo) item;
 			String id = urlRepoFromCollection.getId();
 			if ("http://www.raialeve.com.br".equals(urlRepoFromCollection.getLongUrl())) {
+				t.begin();
 				urlRepoStock.delete(id);
+				t.commit();
 			}
 			
 		});
