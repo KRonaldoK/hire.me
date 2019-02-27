@@ -12,8 +12,8 @@ public final class UrlShortenerSequenceGenerator {
 
 	public static MongoDbSequenceGenerator sequenceGenerator;
 
-	public final long getNextUlrRepo() {
-		return sequenceGenerator.getNextUrlRepo();
+	public final long getNextUlrRepo(SequenceStock sequenceStock) {
+		return sequenceGenerator.getNextUrlRepo(sequenceStock);
 	}
 
 	public static MongoDbSequenceGenerator getSequenceGenerator() {
@@ -33,11 +33,7 @@ public final class UrlShortenerSequenceGenerator {
 
 	public void setUp() {
 
-		sequenceGenerator = new MongoDbSequenceGenerator();
-	}
-
-	public void setSequenceStock(SequenceStock sequenceStock) {
-		sequenceGenerator.setSequenceStock(sequenceStock);
+		sequenceGenerator = MongoDbSequenceGenerator.getInstance();
 	}
 
 }

@@ -50,8 +50,8 @@ public class UrlShortenerServiceTest {
 	@Before
 	public void setUp() {
 		client = ClientBuilder.newBuilder()
-				.connectTimeout(5, TimeUnit.SECONDS)
-				.readTimeout(5, TimeUnit.SECONDS)
+				.connectTimeout(10, TimeUnit.SECONDS)
+				.readTimeout(10, TimeUnit.SECONDS)
 				.register(JsonBindingFeature.class)
 				.build();
 

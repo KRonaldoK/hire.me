@@ -34,10 +34,6 @@ public class UrlConverter {
 
 		UrlShortenerSequenceGenerator urlShortenerSequenceGenerator = UrlShortenerSequenceGenerator.getInstance();
 		
-		urlShortenerSequenceGenerator.setSequenceStock(sequenceStock);
-		
-		//Long idKey = urlShortenerSequenceGenerator.getNextUlrRepo();
-		
 		String uniqueID = null;
 		Long idKey = -1L;
 		
@@ -46,7 +42,7 @@ public class UrlConverter {
 		
 		do {
 			
-			idKey = urlShortenerSequenceGenerator.getNextUlrRepo();
+			idKey = urlShortenerSequenceGenerator.getNextUlrRepo(sequenceStock);
 			
 			uniqueID = BaseMapperConverter.getInstance().createUniqueID(idKey);
 			

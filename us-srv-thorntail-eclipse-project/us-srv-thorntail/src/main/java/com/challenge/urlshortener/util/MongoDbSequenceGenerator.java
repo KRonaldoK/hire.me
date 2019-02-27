@@ -3,20 +3,12 @@ package com.challenge.urlshortener.util;
 import com.challenge.urlshortener.domain.Sequence;
 import com.challenge.urlshortener.domain.SequenceStock;
 
-public class MongoDbSequenceGenerator {
-
-	private SequenceStock sequenceStock;
-
-	public SequenceStock getSequenceStock() {
-		return sequenceStock;
-	}
-
-	public void setSequenceStock(SequenceStock sequenceStock) {
-		this.sequenceStock = sequenceStock;
-	}
+public final class MongoDbSequenceGenerator {
+	
+	public static final MongoDbSequenceGenerator INSTANCE = new MongoDbSequenceGenerator();
 
 	// Thread safe
-	public synchronized long getNextUrlRepo() {
+	public synchronized long getNextUrlRepo(SequenceStock sequenceStock) {
 
 		Sequence urlRepoSequenceRetrieved = null;
 
@@ -49,5 +41,10 @@ public class MongoDbSequenceGenerator {
 		super();
 
 	}
+	
+	public static MongoDbSequenceGenerator getInstance() {
 
+		return INSTANCE;
+	}
+	
 }
