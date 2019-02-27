@@ -1,0 +1,91 @@
+{
+	"variables": [],
+	"info": {
+		"name": "8080 - Url shortener service",
+		"_postman_id": "66393c93-98a4-e536-af1d-b0e9a783b5e5",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "NO custom alias (use porta 80 para container)",
+			"request": {
+				"url": "http://localhost:8080/api/urlRepository",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"longUrl\": \"http://www.google.com\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "CUSTOM ALIAS (use porta 80 para container)",
+			"request": {
+				"url": "http://localhost:8080/api/urlRepository",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"alias\": \"c\",\n\"longUrl\": \"http://www.jcb.com.br\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Redirect  (use porta 80 para container)",
+			"request": {
+				"url": "http://localhost:8080/api/urlRepository/b",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id_key\":-1,\n\"alias\":\"xxx\",\n\"long_url\":\"http://urllonga.com\",\n\"short_url\":\"http://xxx\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Redirect  (use porta 80 para container)",
+			"request": {
+				"url": "http://localhost:8080/api/urlRepository/b",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id_key\":-1,\n\"alias\":\"xxx\",\n\"long_url\":\"http://urllonga.com\",\n\"short_url\":\"http://xxx\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

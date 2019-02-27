@@ -1,0 +1,6 @@
+FROM openjdk:8
+ENV swarm.http.port 8080
+RUN mkdir microservices
+COPY ./target/us-srv-thorntail.jar ./microservices
+EXPOSE 8080
+ENTRYPOINT java -jar -Djava.net.preferIPv4Stack=true ./microservices/us-srv-thorntail.jar
