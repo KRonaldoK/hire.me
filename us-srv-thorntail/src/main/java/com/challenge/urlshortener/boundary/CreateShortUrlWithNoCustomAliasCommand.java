@@ -40,7 +40,7 @@ public class CreateShortUrlWithNoCustomAliasCommand extends ShortenUrlCommand {
 
 		logger.log(Level.INFO, "UrlRepo persisted: {0}", urlRepo);
 		
-		return null;
+		return newUrlRepo;
 	}
 	
 	private UrlRepo handleLongUrl(UrlRepo urlRepo, UriInfo uriInfo) throws Exception {

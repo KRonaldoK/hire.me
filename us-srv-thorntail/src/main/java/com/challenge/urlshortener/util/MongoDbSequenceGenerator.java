@@ -20,7 +20,7 @@ public class MongoDbSequenceGenerator {
 	private Logger logger;
 
 	// Thread safe
-	public synchronized long getNextUrlRepo() {
+	public synchronized long getNextUrlRepo() throws Exception {
 
 		Sequence urlRepoSequenceRetrieved = null;
 
@@ -35,16 +35,7 @@ public class MongoDbSequenceGenerator {
 
 		} else {
 
-			// Initialize the sequence collection
-
-			// It must be 1L
-			Sequence newSequence = new Sequence("url_repo_id", new Long(1L));
-
-			sequenceStock.create(newSequence);
-
-			long currentSeq = 0;
-			long nextSeq = currentSeq + 1;
-			return nextSeq;
+			throw new Exception("Mongodb sequence for urlrepo id key was not initialized!");
 		}
 
 	}
@@ -62,5 +53,25 @@ public class MongoDbSequenceGenerator {
 	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
 		logger.log(Level.INFO, "Verifying mongodb sequence for initialization...");
 		
+		Sequence urlRepoSequenceRetrieved = null;
+
+		urlRepoSequenceRetrieved = sequenceStock.findUrlRepoSeqByName();
+		if (urlRepoSequenceRetrieved != null) {
+			
+			logger.log(Level.INFO, "Mongodb sequence for \"UrlRepo id key\" was already initiated...");
+			
+
+		} else {
+
+			// Initialize the sequence collection
+
+			// It must be 1L
+			Sequence newSequence = new Sequence("url_repo_id", new Long(1L));
+
+			sequenceStock.create(newSequence);
+			
+			logger.log(Level.INFO, "Mongodb sequence for \\\"UrlRepo id key\\\" initiated to 1.");
+			
+		}
 	}
 }

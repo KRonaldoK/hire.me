@@ -3,11 +3,9 @@ package com.challenge.urlshortener.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import com.challenge.urlshortener.domain.SequenceStock;
 import com.challenge.urlshortener.domain.UrlRepo;
 import com.challenge.urlshortener.domain.UrlRepoStock;
 
@@ -45,20 +43,20 @@ public class UrlShortener {
 
 		logger.log(Level.INFO, "Shortening {0}", longUrl);
 
-		String uniqueID = null;
+		String uniqueAlias = null;
 		Long idKey = -1L;
 
 		// did someone informed before, a custom alias that causes collision with this
 		// new generated alias?
 		boolean aliasAlreadyExists = false;
-
+		
 		do {
 
 			idKey = mongoDbSequenceGenerator.getNextUrlRepo();
 
-			uniqueID = BaseMapperConverter.getInstance().createUniqueID(idKey);
+			uniqueAlias = BaseMapperConverter.getInstance().createUniqueID(idKey);
 
-			if (urlRepoStock.exists(uniqueID)) {
+			if (urlRepoStock.exists(uniqueAlias)) {
 				aliasAlreadyExists = true;
 			} else {
 				aliasAlreadyExists = false;
@@ -66,19 +64,19 @@ public class UrlShortener {
 
 		} while (aliasAlreadyExists);
 
-		String shortenedURL = localURL + "/" + uniqueID;
+		String shortenedURL = localURL + "/" + uniqueAlias;
 
 		logger.log(Level.INFO, "Shortened url is: {0}", shortenedURL);
 
 		// setting attributes to be persisted
-		urlRepo.setAlias(uniqueID);
+		urlRepo.setAlias(uniqueAlias);
 		urlRepo.setIdKey(idKey);
 		urlRepo.setShortUrl(shortenedURL);
 
 		return urlRepo;
 
 	}
-
+	
 	public UrlRepo shortenURLWithCustomAlias(String localURL, String customAlias) {
 
 		logger.log(Level.INFO, "Shortening {0}", urlRepo.getLongUrl());
