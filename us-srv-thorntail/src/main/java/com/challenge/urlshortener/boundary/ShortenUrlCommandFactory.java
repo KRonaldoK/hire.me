@@ -27,31 +27,45 @@ public class ShortenUrlCommandFactory {
 		ShortenUrlCommand shortUrlCommand;
 
 		if (wasInformed(customAlias)) {
-			if (urlRepoStock.exists(urlRepo.getAlias())) {
-				// CUSTOM ALIAS ALREADY EXISTS
-				String message = "CUSTOM ALIAS ALREADY EXISTS";
-				throw new UrlRepoAliasWasFoundException(message, urlRepo);
-
-			}
-			// Nova url curta com custom alias
-			shortUrlCommand = createCreateShortUrlWithCustomAliasCommand(urlRepo, uriInfo, customAlias, logger,
-					urlConverter, urlRepoStock);
-		} else {
-			// Nova url curta "sem custom alias"
 			
-			// was the long url shortened before?
-			UrlRepo urlRepoAlreadyGenerated = urlRepoStock.findGeneratedShortUrlByLongUrl(urlRepo.getLongUrl());
-
-			if (urlRepoAlreadyGenerated == null) {
-				// Nova url curta "sem custom alias" a ser gerada
-				shortUrlCommand = createCreateShortUrlWithNoCustomAliasCommand(urlRepo, uriInfo, logger, urlRepoStock,
-						urlConverter);
-			} else {
-				// re-utiliza do repositorio, a url curta já criada a partir da url longa 
-				shortUrlCommand = createAlreadyGeneratedShortUrlCommand(urlRepoAlreadyGenerated);
-			}
+			shortUrlCommand = generateCustomAliasCommand(urlRepo, customAlias, uriInfo);
+			
+		} else {
+			shortUrlCommand = generateNoCustomAliasCommand(urlRepo, uriInfo);
 		}
 
+		return shortUrlCommand;
+	}
+
+	private ShortenUrlCommand generateNoCustomAliasCommand(UrlRepo urlRepo, UriInfo uriInfo) {
+		ShortenUrlCommand shortUrlCommand;
+		// Nova url curta "sem custom alias"
+		
+		// was the long url shortened before?
+		UrlRepo urlRepoAlreadyGenerated = urlRepoStock.findGeneratedShortUrlByLongUrl(urlRepo.getLongUrl());
+
+		if (urlRepoAlreadyGenerated == null) {
+			// Nova url curta "sem custom alias" a ser gerada
+			shortUrlCommand = createCreateShortUrlWithNoCustomAliasCommand(urlRepo, uriInfo, logger, urlRepoStock,
+					urlConverter);
+		} else {
+			// re-utiliza do repositorio, a url curta já criada a partir da url longa 
+			shortUrlCommand = createAlreadyGeneratedShortUrlCommand(urlRepoAlreadyGenerated);
+		}
+		return shortUrlCommand;
+	}
+
+	private ShortenUrlCommand generateCustomAliasCommand(UrlRepo urlRepo, String customAlias, UriInfo uriInfo) {
+		ShortenUrlCommand shortUrlCommand;
+		if (urlRepoStock.exists(urlRepo.getAlias())) {
+			// CUSTOM ALIAS ALREADY EXISTS
+			String message = "CUSTOM ALIAS ALREADY EXISTS";
+			throw new UrlRepoAliasWasFoundException(message, urlRepo);
+
+		}
+		// Nova url curta com custom alias
+		shortUrlCommand = createCreateShortUrlWithCustomAliasCommand(urlRepo, uriInfo, customAlias, logger,
+				urlConverter, urlRepoStock);
 		return shortUrlCommand;
 	}
 
