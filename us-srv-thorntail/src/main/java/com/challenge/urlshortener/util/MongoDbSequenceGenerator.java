@@ -1,14 +1,26 @@
 package com.challenge.urlshortener.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.challenge.urlshortener.domain.Sequence;
 import com.challenge.urlshortener.domain.SequenceStock;
 
-public final class MongoDbSequenceGenerator {
+@ApplicationScoped
+public class MongoDbSequenceGenerator {
+	@Inject
+	private SequenceStock sequenceStock;
 	
-	public static final MongoDbSequenceGenerator INSTANCE = new MongoDbSequenceGenerator();
+	@Inject
+	private Logger logger;
 
 	// Thread safe
-	public synchronized long getNextUrlRepo(SequenceStock sequenceStock) {
+	public synchronized long getNextUrlRepo() {
 
 		Sequence urlRepoSequenceRetrieved = null;
 
@@ -38,13 +50,17 @@ public final class MongoDbSequenceGenerator {
 	}
 
 	public MongoDbSequenceGenerator() {
+		
 		super();
-
 	}
-	
+	/*
 	public static MongoDbSequenceGenerator getInstance() {
 
 		return INSTANCE;
 	}
-	
+	*/
+	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+		logger.log(Level.INFO, "Verifying mongodb sequence for initialization...");
+		
+	}
 }

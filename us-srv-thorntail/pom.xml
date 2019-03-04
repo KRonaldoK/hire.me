@@ -41,12 +41,12 @@
 				<groupId>io.thorntail</groupId>
 				<artifactId>thorntail-datasources</artifactId>
 			</dependency>
-			<!-- ? -->
+			<!-- 
 			<dependency>
 				<groupId>io.thorntail</groupId>
 				<artifactId>thorntail-jta</artifactId>
 			</dependency>
-
+			? -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -120,17 +120,14 @@
 			<artifactId>jpa-eclipselink</artifactId>
 		</dependency>
 
-		<!-- ? -->
+		<!-- 
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<!-- ? -->
-		<dependency>
-			<groupId>io.thorntail</groupId>
-			<artifactId>hibernate-validator</artifactId>
-		</dependency>
+		-->
+		
 		<!-- ? -->
 		<dependency>
 			<groupId>com.h2database</groupId>

@@ -158,17 +158,6 @@ public class UrlShortenerServiceTest {
 		
 
 	}
-
-	private static String basePath() {
-		URL resource = UrlShortenerServiceTest.class.getResource("/");
-		File file;
-		try {
-			file = new File(resource.toURI()).getParentFile().getParentFile();
-		} catch (URISyntaxException e) {
-			throw new IllegalStateException(e);
-		}
-		return file.getAbsolutePath();
-	}
 	
 	// FOR DEVELOPMENT ONLY
 	

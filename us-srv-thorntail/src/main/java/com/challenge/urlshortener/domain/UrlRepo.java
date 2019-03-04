@@ -24,6 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NamedQuery(name = UrlRepo.FIND_JUST_ONE, query = "FROM UrlRepo p WHERE p.id = :anId")
 @NamedQuery(name = UrlRepo.FIND_BY_ALIAS, query = "FROM UrlRepo p WHERE p.alias = :anAlias")
 @NamedQuery(name = UrlRepo.FIND_BY_LONG_URL, query = "FROM UrlRepo p WHERE p.longUrl = :aLongUrl")
+@NamedQuery(name = UrlRepo.FIND_GENERATED_SHORT_URL_BY_LONG_URL, query = "FROM UrlRepo p WHERE p.longUrl = :aLongUrl and p.idKey is not null")
 @NamedQuery(name = UrlRepo.FIND_BY_SHORT_URL, query = "FROM UrlRepo p WHERE p.shortUrl = :aShortUrl")
 @JsonbPropertyOrder(value = { "alias", "shortUrl", "longUrl", "statistics" })
 public class UrlRepo {
@@ -144,6 +145,8 @@ public class UrlRepo {
 	static final String FIND_BY_ALIAS = "UrlRepo.findByAlias";
 	
 	static final String FIND_BY_LONG_URL = "UrlRepo.findByLongUrl";
+	
+	static final String FIND_GENERATED_SHORT_URL_BY_LONG_URL = "UrlRepo.findGeneratedShortUrlByLongUrl";
 	
 	static final String FIND_BY_SHORT_URL = "UrlRepo.findByShortUrl";
 

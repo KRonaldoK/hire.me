@@ -3,15 +3,16 @@ package com.challenge.urlshortener.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.core.UriInfo;
 
+import com.challenge.urlshortener.domain.SequenceStock;
 import com.challenge.urlshortener.domain.UrlRepo;
 import com.challenge.urlshortener.domain.UrlRepoStock;
 
 @RequestScoped
-public class UrlConverter {
+public class UrlShortener {
 
 	@Inject
 	private UrlRepoStock urlRepoStock;
@@ -22,7 +23,13 @@ public class UrlConverter {
 	@Inject
 	private MongoDbSequenceGenerator mongoDbSequenceGenerator;
 
-	public UrlConverter() {
+	private UrlRepo urlRepo;
+
+	public void setUrlRepo(UrlRepo urlRepo) {
+		this.urlRepo = urlRepo;
+	}
+
+	public UrlShortener() {
 
 	}
 
@@ -34,12 +41,11 @@ public class UrlConverter {
 	 * @return the shortened url
 	 * @throws Exception
 	 */
-	public UrlRepo shortenURLWithNoCustomAlias(UriInfo uriInfo, UrlRepo urlRepo) throws Exception {
+	public UrlRepo shortenURL(String localURL, String longUrl) throws Exception {
 
-		logger.log(Level.INFO, "Shortening {0}", urlRepo.getLongUrl());
+		logger.log(Level.INFO, "Shortening {0}", longUrl);
 
-		String newAliasToBeGenerated = null;
-		// alias na base 10
+		String uniqueID = null;
 		Long idKey = -1L;
 
 		// did someone informed before, a custom alias that causes collision with this
@@ -50,26 +56,22 @@ public class UrlConverter {
 
 			idKey = mongoDbSequenceGenerator.getNextUrlRepo();
 
-			newAliasToBeGenerated = BaseMapperConverter.getInstance().createUniqueID(idKey);
+			uniqueID = BaseMapperConverter.getInstance().createUniqueID(idKey);
 
-			if (urlRepoStock.exists(newAliasToBeGenerated)) {
+			if (urlRepoStock.exists(uniqueID)) {
 				aliasAlreadyExists = true;
 			} else {
 				aliasAlreadyExists = false;
 			}
 
 		} while (aliasAlreadyExists);
-		
-		String localURL = uriInfo.getAbsolutePath().toString();
-		
-		//httpRequest.getRequestURL().toString();
-		
-		String shortenedURL = localURL + "/" + newAliasToBeGenerated;
+
+		String shortenedURL = localURL + "/" + uniqueID;
 
 		logger.log(Level.INFO, "Shortened url is: {0}", shortenedURL);
 
 		// setting attributes to be persisted
-		urlRepo.setAlias(newAliasToBeGenerated);
+		urlRepo.setAlias(uniqueID);
 		urlRepo.setIdKey(idKey);
 		urlRepo.setShortUrl(shortenedURL);
 
@@ -77,17 +79,14 @@ public class UrlConverter {
 
 	}
 
-	public UrlRepo shortenURLWithCustomAlias(UriInfo uriInfo, String customAlias, UrlRepo urlRepo, Logger logger) {
+	public UrlRepo shortenURLWithCustomAlias(String localURL, String customAlias) {
 
 		logger.log(Level.INFO, "Shortening {0}", urlRepo.getLongUrl());
-		
-		String localUrl = uriInfo.getAbsolutePath().toString();
-		
-		String shortenedURL = localUrl + "/" + customAlias;
+
+		String shortenedURL = localURL + "/" + customAlias;
 
 		logger.log(Level.INFO, "Shortened url is: {0}", shortenedURL);
-		
-		urlRepo.setAlias(customAlias);
+
 		urlRepo.setShortUrl(shortenedURL);
 
 		return urlRepo;

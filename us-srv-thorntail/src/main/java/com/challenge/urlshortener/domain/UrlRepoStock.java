@@ -71,11 +71,11 @@ public class UrlRepoStock {
 	}
 
 	public void create(UrlRepo urlRepo) {
-		
+
 		logger.log(Level.INFO, "Creating {0}.", urlRepo);
 
 		entityManager.persist(urlRepo);
-		
+
 	}
 
 	public void delete(String id) {
@@ -97,7 +97,7 @@ public class UrlRepoStock {
 		UrlRepo urlRepo = null;
 		try {
 			TypedQuery<UrlRepo> findJustOne = entityManager.createNamedQuery(UrlRepo.FIND_JUST_ONE, UrlRepo.class);
-			findJustOne.setParameter("anId", Objects.requireNonNull(id)).getSingleResult();
+			findJustOne.setParameter("anId", Objects.requireNonNull(id));
 
 			List<UrlRepo> urlRepos = findJustOne.getResultList();
 			if (urlRepos == null) {
@@ -111,21 +111,21 @@ public class UrlRepoStock {
 
 		return urlRepo;
 	}
-	
+
 	public UrlRepo findByLongUrl(String longUrl) {
 		logger.log(Level.INFO, "Will try to find urlRepo with long url [{0}].", longUrl);
-		
+
 		UrlRepo urlRepo = null;
 		try {
 			TypedQuery<UrlRepo> findByLongUrl = entityManager.createNamedQuery(UrlRepo.FIND_BY_LONG_URL, UrlRepo.class);
-			findByLongUrl.setParameter("aLongUrl", Objects.requireNonNull(longUrl)).getSingleResult();
+			findByLongUrl.setParameter("aLongUrl", Objects.requireNonNull(longUrl));
 
 			urlRepo = findByLongUrl.getSingleResult();
 			if (urlRepo == null) {
 				logger.log(Level.INFO, "Did not found urlRepo with long url [{0}]", longUrl);
 			}
 		} catch (NoResultException e) {
-			
+
 			logger.log(Level.INFO, "Did not found urlRepo with long url [{0}]", longUrl);
 			urlRepo = null;
 		}
@@ -133,27 +133,50 @@ public class UrlRepoStock {
 		return urlRepo;
 	}
 	
-	public UrlRepo findByShortUrl(String shortUrl) {
-		logger.log(Level.INFO, "Will try to find urlRepo with short url [{0}].", shortUrl);
-		
+	public UrlRepo findGeneratedShortUrlByLongUrl(String longUrl) {
+		logger.log(Level.INFO, "Will try to find urlRepo already generated with long url [{0}].", longUrl);
+
 		UrlRepo urlRepo = null;
 		try {
-			TypedQuery<UrlRepo> findByShortUrl = entityManager.createNamedQuery(UrlRepo.FIND_BY_SHORT_URL, UrlRepo.class);
-			findByShortUrl.setParameter("aShortUrl", Objects.requireNonNull(shortUrl)).getSingleResult();
+			TypedQuery<UrlRepo> findGeneratedShortUrlByLongUrl = entityManager.createNamedQuery(UrlRepo.FIND_GENERATED_SHORT_URL_BY_LONG_URL, UrlRepo.class);
+			findGeneratedShortUrlByLongUrl.setParameter("aLongUrl", Objects.requireNonNull(longUrl));
+			
+			List<UrlRepo> urlRepos = findGeneratedShortUrlByLongUrl.getResultList();
+			urlRepo = urlRepos.get(0);
+			if (urlRepo == null) {
+				logger.log(Level.INFO, "Did not found urlRepo with long url [{0}]", longUrl);
+			}
+		} catch (NoResultException e) {
+
+			logger.log(Level.INFO, "Did not found urlRepo with long url [{0}]", longUrl);
+			urlRepo = null;
+		}
+
+		return urlRepo;
+	}
+
+	public UrlRepo findByShortUrl(String shortUrl) {
+		logger.log(Level.INFO, "Will try to find urlRepo with short url [{0}].", shortUrl);
+
+		UrlRepo urlRepo = null;
+		try {
+			TypedQuery<UrlRepo> findByShortUrl = entityManager.createNamedQuery(UrlRepo.FIND_BY_SHORT_URL,
+					UrlRepo.class);
+			findByShortUrl.setParameter("aShortUrl", Objects.requireNonNull(shortUrl));
 
 			urlRepo = findByShortUrl.getSingleResult();
 			if (urlRepo == null) {
 				logger.log(Level.INFO, "Did not found urlRepo with short url [{0}]", shortUrl);
 			}
 		} catch (NoResultException e) {
-			
+
 			logger.log(Level.INFO, "Did not found urlRepo with short url [{0}]", shortUrl);
 			urlRepo = null;
 		}
 
 		return urlRepo;
 	}
-	
+
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
@@ -163,7 +186,9 @@ public class UrlRepoStock {
 	}
 
 	public UrlRepoStock() {
+
 		super();
+
 	}
 
 }
