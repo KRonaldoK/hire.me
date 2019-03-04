@@ -45,8 +45,6 @@ public class UrlShortenerServiceTest {
 	
 	private Client client;
 
-	private String createdCustomAlias = "b";
-
 	@Before
 	public void setUp() {
 		client = ClientBuilder.newBuilder()
@@ -82,10 +80,11 @@ public class UrlShortenerServiceTest {
 
 		Response response = apiShorten.request(MediaType.APPLICATION_JSON).post(Entity.json(urlRepo));
 
-		UrlRepo urlRepoAlreadyCreated = response.readEntity(UrlRepo.class);
+		UrlRepo urlRepoCreated = response.readEntity(UrlRepo.class);
 
-		assertThat(urlRepoAlreadyCreated, is(notNullValue()));
-		assertThat(urlRepoAlreadyCreated.getLongUrl(), is(equalTo(longUrl)));
+		assertThat(urlRepoCreated, is(notNullValue()));
+		assertThat(urlRepoCreated.getLongUrl(), is(equalTo(longUrl)));
+		
 		assert response.getStatus() == 201;
 	}
 
@@ -112,14 +111,25 @@ public class UrlShortenerServiceTest {
 		//
 		// Shorten URL: Chamada com CUSTOM_ALIAS que já existe
 		//
-
+		
 		UrlRepo urlRepo = new UrlRepo();
-		// Custom alias reutilizado de "Shorten URL: Chamada com CUSTOM_ALIAS"
+		RandomStringTest generator = new RandomStringTest(8, ThreadLocalRandom.current());
+		String customAlias = generator.nextString();
+		urlRepo.setAlias(customAlias);
+		urlRepo.setLongUrl("https://docs.huihoo.com/jersey/2.13/monitoring_tracing.html");
 
-		urlRepo.setAlias(createdCustomAlias);
-		urlRepo.setLongUrl("https://codahale.com/what-makes-jersey-interesting-injection-providers/");
 		Response response = apiShorten.request(MediaType.APPLICATION_JSON).post(Entity.json(urlRepo));
-		assert (response.getStatus() == 409 || response.getStatus() == 201);
+
+		assert response.getStatus() == 201;
+		
+		// Custom alias reutilizado
+		String aliasCreated = customAlias;
+		
+		urlRepo.setAlias(aliasCreated);
+		urlRepo.setLongUrl("https://codahale.com/what-makes-jersey-interesting-injection-providers/");
+		response = apiShorten.request(MediaType.APPLICATION_JSON).post(Entity.json(urlRepo));
+		
+		assert (response.getStatus() == 409);
 
 	}
 
@@ -143,9 +153,20 @@ public class UrlShortenerServiceTest {
 		//
 		// Retrieve URL: REDIRECT
 		//
+		
+		UrlRepo urlRepo = new UrlRepo();
+		RandomStringTest generator = new RandomStringTest(8, ThreadLocalRandom.current());
+		String customAlias = generator.nextString();
+		urlRepo.setAlias(customAlias);
+		urlRepo.setLongUrl("https://www.raialeve.com.br");
 
-		String aliasAlreadyCreated = createdCustomAlias;
-		Response response = apiRedirect.path("/urlRepository").path("/{alias}").resolveTemplate("alias", aliasAlreadyCreated)
+		Response response = apiShorten.request(MediaType.APPLICATION_JSON).post(Entity.json(urlRepo));
+
+		assert response.getStatus() == 201;
+		
+		String aliasCreated = customAlias;
+		
+		response = apiRedirect.path("/urlRepository").path("/{alias}").resolveTemplate("alias", aliasCreated)
 				.request().accept(MediaType.APPLICATION_JSON).get();
 
 		assert (response.getStatus() == 307 || response.getStatus() == 404);
