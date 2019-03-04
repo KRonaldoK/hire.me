@@ -51,7 +51,7 @@ public class UrlRepoResource {
 		// compute statistics
 		long startTime = System.currentTimeMillis();
 
-		urlShortenerService.shortenUrl(urlRepo, uriInfo);
+		UrlRepo urlRepoShortened = urlShortenerService.shortenUrl(urlRepo, uriInfo);
 
 		// compute statistics
 		long timeElapsed = System.currentTimeMillis() - startTime;
@@ -59,33 +59,24 @@ public class UrlRepoResource {
 		Statistics statistics = new Statistics();
 		statistics.setTimeTaken(timeElapsed + "ms");
 
-		urlRepo.setStatistics(statistics);
+		urlRepoShortened.setStatistics(statistics);
 
-		return Response.status(Status.CREATED).entity(urlRepo).type(MediaType.APPLICATION_JSON).build();
+		return Response.status(Status.CREATED).entity(urlRepoShortened).type(MediaType.APPLICATION_JSON).build();
 	}
 
 	@GET
 	@Path("/{alias}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@PathParam("alias") String alias, @Context HttpServletRequest httpRequest) {
+	public Response get(@PathParam("alias") String alias, @Context UriInfo uriInfo) {
 
-		String shortenedURL = httpRequest.getRequestURL().toString();
+		UrlRepo urlRepoShortened = urlShortenerService.findShortenedUrl(uriInfo);
 
-		// pesquisar a url curta
-		UrlRepo urlRepo = urlRepoStock.findByShortUrl(shortenedURL);
-		if (urlRepo == null) {
-
-			throw new UrlRepoMissingShortUrlException("SHORTENED URL NOT FOUND");
-
-		}
-
-		// TODO: computar quantidade de acessos no "get" do alias? requestListener?
-		// planeta.computeAparicoes();
-
-		return Response.status(Status.TEMPORARY_REDIRECT).entity(urlRepo).type(MediaType.APPLICATION_JSON)
-				.header("Location", urlRepo.getLongUrl()).build();
+		return Response.status(Status.TEMPORARY_REDIRECT).entity(urlRepoShortened).type(MediaType.APPLICATION_JSON)
+				.header("Location", urlRepoShortened.getLongUrl()).build();
 
 	}
+
+	
 
 	public UrlRepoResource() {
 		super();

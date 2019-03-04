@@ -9,14 +9,19 @@ import javax.inject.Inject;
 import javax.ws.rs.core.UriInfo;
 
 import com.challenge.urlshortener.domain.UrlRepo;
+import com.challenge.urlshortener.domain.UrlRepoStock;
 import com.challenge.urlshortener.integration.UrlRepoMissingAttributeException;
+import com.challenge.urlshortener.integration.UrlRepoMissingShortUrlException;
 
 @RequestScoped
 public class UrlShortenerService {
 
 	@Inject
 	private Logger logger;
-
+	
+	@Inject 
+	private UrlRepoStock urlRepoStock;
+	
 	@Inject
 	private ShortenUrlCommandFactory shortenUrlCommandFactory;
 
@@ -33,7 +38,24 @@ public class UrlShortenerService {
 		return urlRepoReturned;
 
 	}
+	
+	public UrlRepo findShortenedUrl(UriInfo uriInfo) {
+		
+		String shortenedURL = uriInfo.getAbsolutePath().toString();
 
+		// pesquisar usando a url curta
+		UrlRepo urlRepo = urlRepoStock.findByShortUrl(shortenedURL);
+
+		if (urlRepo == null) {
+
+			throw new UrlRepoMissingShortUrlException("SHORTENED URL NOT FOUND");
+
+		}
+
+		// TODO: computar quantidade de acessos no "get" do alias? response listener?
+		return urlRepo;
+	}
+	
 	public void validate(UrlRepo urlRepo) {
 
 		logger.log(Level.INFO, "validating {0}.", urlRepo);

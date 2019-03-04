@@ -43,7 +43,7 @@ public class ShortenUrlCommandFactory {
 		
 		// was the long url shortened before?
 		UrlRepo urlRepoAlreadyGenerated = urlRepoStock.findGeneratedShortUrlByLongUrl(urlRepo.getLongUrl());
-
+		
 		if (urlRepoAlreadyGenerated == null) {
 			// Nova url curta "sem custom alias" a ser gerada
 			shortUrlCommand = createCreateShortUrlWithNoCustomAliasCommand(urlRepo, uriInfo, logger, urlRepoStock,

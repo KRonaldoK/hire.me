@@ -141,11 +141,8 @@ public class UrlRepoStock {
 			TypedQuery<UrlRepo> findGeneratedShortUrlByLongUrl = entityManager.createNamedQuery(UrlRepo.FIND_GENERATED_SHORT_URL_BY_LONG_URL, UrlRepo.class);
 			findGeneratedShortUrlByLongUrl.setParameter("aLongUrl", Objects.requireNonNull(longUrl));
 			
-			List<UrlRepo> urlRepos = findGeneratedShortUrlByLongUrl.getResultList();
-			urlRepo = urlRepos.get(0);
-			if (urlRepo == null) {
-				logger.log(Level.INFO, "Did not found urlRepo with long url [{0}]", longUrl);
-			}
+			urlRepo = findGeneratedShortUrlByLongUrl.getSingleResult();
+			
 		} catch (NoResultException e) {
 
 			logger.log(Level.INFO, "Did not found urlRepo with long url [{0}]", longUrl);
