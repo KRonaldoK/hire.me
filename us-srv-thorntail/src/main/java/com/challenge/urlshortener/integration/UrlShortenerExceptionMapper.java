@@ -58,14 +58,14 @@ public class UrlShortenerExceptionMapper implements ExceptionMapper<UrlShortener
             return Response.status(Status.BAD_REQUEST)
                     .entity(response).type(MediaType.APPLICATION_JSON).build();
             
-        }  else if (exception instanceof InvalidLongUrlException) {
+        }  else if (exception instanceof MongodbSequenceNotFoundException) {
         	
         	Map<String, String> response = new HashMap<>();
             response.put("code", "ERR-0005");
             response.put("type", "USHORT-SRV");
             response.put("message", exception.getMessage());
 
-            return Response.status(Status.BAD_REQUEST)
+            return Response.status(Status.INTERNAL_SERVER_ERROR)
                     .entity(response).type(MediaType.APPLICATION_JSON).build();
             
         }else {

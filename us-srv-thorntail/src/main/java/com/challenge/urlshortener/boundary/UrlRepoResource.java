@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
+import com.challenge.urlshortener.JAXRSConfiguration;
 import com.challenge.urlshortener.domain.Statistics;
 import com.challenge.urlshortener.domain.UrlRepo;
 import com.challenge.urlshortener.domain.UrlRepoStock;
@@ -75,8 +77,6 @@ public class UrlRepoResource {
 				.header("Location", urlRepoShortened.getLongUrl()).build();
 
 	}
-
-	
 
 	public UrlRepoResource() {
 		super();
